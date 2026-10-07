@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public final class NLKCommand implements CommandExecutor {
     private final NLKPlugin plugin;
@@ -18,7 +19,17 @@ public final class NLKCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.AQUA + "NLK Compatibility");
             sender.sendMessage(ChatColor.GRAY + "Status: " + ChatColor.GREEN + "online");
             sender.sendMessage(ChatColor.GRAY + "Backend: " + ChatColor.WHITE + plugin.getServer().getVersion());
-            sender.sendMessage(ChatColor.GRAY + "Preview modules: " + ChatColor.YELLOW + "not enabled yet");
+
+            if (sender instanceof Player player) {
+                ClientProfile profile = plugin.getClientVersionService().profile(player);
+                sender.sendMessage(ChatColor.GRAY + "Client protocol: " + ChatColor.WHITE + profile.protocol());
+                sender.sendMessage(ChatColor.GRAY + "Newer than server: " +
+                        (profile.newerThanServer() ? ChatColor.GREEN + "yes" : ChatColor.GRAY + "no"));
+            } else {
+                sender.sendMessage(ChatColor.GRAY + "Client protocol: " + ChatColor.WHITE + "console");
+            }
+
+            sender.sendMessage(ChatColor.GRAY + "Preview modules: " + ChatColor.YELLOW + "in development");
             return true;
         }
 
