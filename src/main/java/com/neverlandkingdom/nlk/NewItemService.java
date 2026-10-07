@@ -1,7 +1,6 @@
 package com.neverlandkingdom.nlk;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,10 +13,12 @@ import java.util.UUID;
 
 public final class NewItemService {
     private final NLKPlugin plugin;
+    private final FutureItemRegistry registry;
     private final NamespacedKey futureItemKey;
 
-    public NewItemService(NLKPlugin plugin) {
+    public NewItemService(NLKPlugin plugin, FutureItemRegistry registry) {
         this.plugin = plugin;
+        this.registry = registry;
         this.futureItemKey = new NamespacedKey(plugin, "future_item");
     }
 
@@ -30,33 +31,29 @@ public final class NewItemService {
 
         sendResourcePack(player);
 
-        // The carrier item is a real 1.21.11 item. The resource pack uses
-        // its component data to render the newer item's model/icon.
-        // Nothing is injected into the old server's vanilla registry.
+        // The preview is opt-in and only uses real 1.21.11 carrier items.
+        // It never injects new vanilla registry entries into the backend.
         if (plugin.getConfig().getBoolean("preview.give-on-join", false)) {
-            givePreviewItems(player);
+            for (FutureItem definition : registry.forClientProtocol(profile.protocol())) {
+                give(player, createItem(definition));
+            }
         }
     }
 
-    private void givePreviewItems(Player player) {
-        give(player, futureItem(Material.SANDSTONE, "sulfur", "Sulfur"));
-        give(player, futureItem(Material.END_STONE, "potent_sulfur", "Potent Sulfur"));
-    }
-
-    private ItemStack futureItem(Material carrier, String modelKey, String displayName) {
-        ItemStack item = new ItemStack(carrier);
+    private ItemStack createItem(FutureItem definition) {
+        ItemStack item = new ItemStack(definition.carrier());
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(Component.text(displayName));
+        meta.displayName(Component.text(definition.displayName()));
 
         var customModelData = meta.getCustomModelDataComponent();
-        customModelData.setStrings(List.of(modelKey));
+        customModelData.setStrings(List.of(definition.modelKey()));
         meta.setCustomModelDataComponent(customModelData);
 
         meta.getPersistentDataContainer().set(
                 futureItemKey,
                 PersistentDataType.STRING,
-                modelKey
+                definition.id()
         );
 
         item.setItemMeta(meta);
@@ -82,7 +79,7 @@ public final class NewItemService {
         try {
             player.addResourcePack(
                     UUID.nameUUIDFromBytes(
-                            "NLK-ViaBackwards-Plus".getBytes(StandardCharsets.UTF_8)
+                            "NLK-Future-Items".getBytes(StandardCharsets.UTF_8)
                     ),
                     url,
                     null,
