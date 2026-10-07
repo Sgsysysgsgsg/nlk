@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -44,11 +44,15 @@ jobs:
           cd build/resourcepack
           zip -r ../NLK-Future-Items.zip .
 
-      - name: Upload Resource Pack
-        uses: actions/upload-artifact@v4
+      - name: Publish Resource Pack Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: NLK-Future-Items-ResourcePack
-          path: build/NLK-Future-Items.zip
+          tag_name: nlk-latest
+          name: NLK Latest Resource Pack
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: build/NLK-Future-Items.zip
 
       - name: Upload JAR
         uses: actions/upload-artifact@v4
