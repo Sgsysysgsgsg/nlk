@@ -1,0 +1,5 @@
+# Java protocol used by the Paper 1.21.11 backend.
+server-protocol: 774
+
+# Feature modules are selected automatically from the connecting client.
+automatic-features: true
