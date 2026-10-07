@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/end_stone",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "minecraft:item/end_stone_potent_sulfur"
+    }
+  ]
+}
