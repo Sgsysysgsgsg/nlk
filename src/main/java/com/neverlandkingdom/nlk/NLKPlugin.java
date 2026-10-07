@@ -9,6 +9,7 @@ public final class NLKPlugin extends JavaPlugin {
     private FutureItemRegistry futureItemRegistry;
     private NewItemService newItemService;
     private BedrockIntegration bedrockIntegration;
+    private VirtualBlockRegistry virtualBlockRegistry;
 
     @Override
     public void onEnable() {
@@ -20,6 +21,7 @@ public final class NLKPlugin extends JavaPlugin {
         clientVersionService = new ClientVersionService(serverProtocol);
         featureRegistry = new FeatureRegistry();
         futureItemRegistry = new FutureItemRegistry();
+        virtualBlockRegistry = new VirtualBlockRegistry();
         newItemService = new NewItemService(this, futureItemRegistry);
         bedrockIntegration = new BedrockIntegration(this);
         bedrockIntegration.installMapping();
@@ -39,6 +41,7 @@ public final class NLKPlugin extends JavaPlugin {
         getLogger().info("NLK Compatibility enabled.");
         getLogger().info("Backend: " + getServer().getVersion());
         getLogger().info("Future item registry: " + futureItemRegistry.all().size() + " definitions.");
+        getLogger().info("Virtual block registry: " + virtualBlockRegistry.all().size() + " definitions.");
     }
 
     public ClientVersionService getClientVersionService() {
@@ -55,5 +58,9 @@ public final class NLKPlugin extends JavaPlugin {
 
     public NewItemService getNewItemService() {
         return newItemService;
+    }
+
+    public VirtualBlockRegistry getVirtualBlockRegistry() {
+        return virtualBlockRegistry;
     }
 }
