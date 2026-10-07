@@ -24,9 +24,9 @@ public final class NewItemService {
 
     public void applyTo(Player player) {
         ClientProfile profile = plugin.getClientVersionService().profile(player);
-        if (!profile.newerThanServer()) return;
-
         sendResourcePack(player);
+
+        if (!profile.newerThanServer()) return;
 
         if (plugin.getConfig().getBoolean("preview.give-on-join", false)) {
             for (FutureItem definition : registry.forClientProtocol(profile.protocol())) {
