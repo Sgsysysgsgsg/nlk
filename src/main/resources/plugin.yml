@@ -1,0 +1,18 @@
+name: NLK-Compatibility
+version: '${version}'
+main: com.neverlandkingdom.nlk.NLKPlugin
+api-version: '1.21'
+author: Sgsysysgsgsg
+description: Compatibility and preview layer for newer Minecraft client features on older Paper servers.
+softdepend:
+  - ViaVersion
+  - Geyser-Spigot
+  - floodgate
+commands:
+  nlk:
+    description: NLK compatibility controls
+    usage: /nlk <status|reload>
+    permission: nlk.admin
+permissions:
+  nlk.admin:
+    default: op
