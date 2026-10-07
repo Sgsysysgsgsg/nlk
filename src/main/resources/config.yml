@@ -3,3 +3,8 @@ server-protocol: 774
 
 # Feature modules are selected automatically from the connecting client.
 automatic-features: true
+
+resource-pack:
+  enabled: true
+  # ViaBackwards-Plus v2.7.1 contains newer item models.
+  url: "https://www.curseforge.com/minecraft/texture-packs/vbp/download/8954075"
