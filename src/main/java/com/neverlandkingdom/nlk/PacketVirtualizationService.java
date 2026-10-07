@@ -68,9 +68,9 @@ public final class PacketVirtualizationService extends PacketListenerAbstract {
             WrapperPlayServerBlockChange packet = new WrapperPlayServerBlockChange(event);
             Location location = new Location(
                     player.getWorld(),
-                    packet.getBlockPosition().x(),
-                    packet.getBlockPosition().y(),
-                    packet.getBlockPosition().z()
+                    packet.getBlockPosition().getX(),
+                    packet.getBlockPosition().getY(),
+                    packet.getBlockPosition().getZ()
             );
 
             String id = virtualBlocks.get(BlockKey.from(location));
