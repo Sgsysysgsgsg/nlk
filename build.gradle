@@ -3,15 +3,17 @@ plugins {
 }
 
 group = 'com.neverlandkingdom'
-version = '0.1.0-SNAPSHOT'
+version = '0.2.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
     maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = 'https://repo.viaversion.com' }
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+    compileOnly 'com.viaversion:viaversion-api:5.12.0'
 }
 
 java {
