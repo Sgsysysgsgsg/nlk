@@ -6,5 +6,8 @@ automatic-features: true
 
 resource-pack:
   enabled: true
-  # ViaBackwards-Plus v2.7.1 contains newer item models.
-  url: "https://www.curseforge.com/minecraft/texture-packs/vbp/download/8954075"
+  url: ""
+
+preview:
+  # Keep false by default: NLK should not put items into player inventories.
+  give-on-join: false
