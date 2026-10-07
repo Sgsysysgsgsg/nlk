@@ -11,3 +11,7 @@ resource-pack:
 preview:
   # Keep false by default: NLK should not put items into player inventories.
   give-on-join: false
+
+virtualization:
+  # Experimental packet-only block virtualization. World data is never modified.
+  enabled: false
