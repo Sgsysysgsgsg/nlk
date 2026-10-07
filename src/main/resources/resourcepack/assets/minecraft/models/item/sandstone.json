@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/sandstone",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "minecraft:item/sandstone_sulfur"
+    }
+  ]
+}
