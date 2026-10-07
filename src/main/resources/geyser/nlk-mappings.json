@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "items": {
+    "minecraft:sandstone": [
+      {
+        "type": "legacy",
+        "custom_model_data": 0,
+        "bedrock_identifier": "nlk:sulfur",
+        "display_name": "Sulfur",
+        "bedrock_options": {
+          "icon": "gold_ingot",
+          "creative_category": "items"
+        }
+      }
+    ],
+    "minecraft:end_stone": [
+      {
+        "type": "legacy",
+        "custom_model_data": 1,
+        "bedrock_identifier": "nlk:potent_sulfur",
+        "display_name": "Potent Sulfur",
+        "bedrock_options": {
+          "icon": "emerald",
+          "creative_category": "items"
+        }
+      }
+    ]
+  }
+}
