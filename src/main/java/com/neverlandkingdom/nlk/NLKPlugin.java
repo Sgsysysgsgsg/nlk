@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class NLKPlugin extends JavaPlugin {
     private ClientVersionService clientVersionService;
     private FeatureRegistry featureRegistry;
+    private FutureItemRegistry futureItemRegistry;
     private NewItemService newItemService;
 
     @Override
@@ -17,7 +18,8 @@ public final class NLKPlugin extends JavaPlugin {
 
         clientVersionService = new ClientVersionService(serverProtocol);
         featureRegistry = new FeatureRegistry();
-        newItemService = new NewItemService(this);
+        futureItemRegistry = new FutureItemRegistry();
+        newItemService = new NewItemService(this, futureItemRegistry);
 
         if (getServer().getPluginManager().getPlugin("ViaVersion") == null) {
             getLogger().warning("ViaVersion is not installed. NLK client-version detection will be unavailable.");
@@ -33,7 +35,7 @@ public final class NLKPlugin extends JavaPlugin {
 
         getLogger().info("NLK Compatibility enabled.");
         getLogger().info("Backend: " + getServer().getVersion());
-        getLogger().info("Automatic future-item preview: enabled.");
+        getLogger().info("Future item registry: " + futureItemRegistry.all().size() + " definitions.");
     }
 
     public ClientVersionService getClientVersionService() {
@@ -42,5 +44,13 @@ public final class NLKPlugin extends JavaPlugin {
 
     public FeatureRegistry getFeatureRegistry() {
         return featureRegistry;
+    }
+
+    public FutureItemRegistry getFutureItemRegistry() {
+        return futureItemRegistry;
+    }
+
+    public NewItemService getNewItemService() {
+        return newItemService;
     }
 }
