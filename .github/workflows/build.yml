@@ -29,6 +29,19 @@ jobs:
       - name: Build
         run: gradle build --no-daemon
 
+      - name: Build Java resource pack
+        run: |
+          mkdir -p build/resourcepack
+          cp -R src/main/resources/resourcepack/. build/resourcepack/
+          cd build/resourcepack
+          zip -r ../NLK-Future-Items.zip .
+
+      - name: Upload Resource Pack
+        uses: actions/upload-artifact@v4
+        with:
+          name: NLK-Future-Items-ResourcePack
+          path: build/NLK-Future-Items.zip
+
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
