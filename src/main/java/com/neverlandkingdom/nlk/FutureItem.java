@@ -7,6 +7,7 @@ public record FutureItem(
         int minimumClientProtocol,
         Material carrier,
         String modelKey,
+        int customModelData,
         String displayName
 ) {
 }
