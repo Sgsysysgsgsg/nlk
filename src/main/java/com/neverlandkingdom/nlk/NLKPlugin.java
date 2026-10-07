@@ -10,6 +10,7 @@ public final class NLKPlugin extends JavaPlugin {
     private NewItemService newItemService;
     private BedrockIntegration bedrockIntegration;
     private VirtualBlockRegistry virtualBlockRegistry;
+    private PacketVirtualizationService packetVirtualizationService;
 
     @Override
     public void onEnable() {
@@ -22,9 +23,16 @@ public final class NLKPlugin extends JavaPlugin {
         featureRegistry = new FeatureRegistry();
         futureItemRegistry = new FutureItemRegistry();
         virtualBlockRegistry = new VirtualBlockRegistry();
+        packetVirtualizationService = new PacketVirtualizationService(this);
         newItemService = new NewItemService(this, futureItemRegistry);
         bedrockIntegration = new BedrockIntegration(this);
         bedrockIntegration.installMapping();
+
+        if (getConfig().getBoolean("virtualization.enabled", false)) {
+            packetVirtualizationService.registerIfAvailable();
+        } else {
+            getLogger().info("Packet virtualization is disabled by configuration.");
+        }
 
         if (getServer().getPluginManager().getPlugin("ViaVersion") == null) {
             getLogger().warning("ViaVersion is not installed. NLK client-version detection will be unavailable.");
@@ -62,5 +70,9 @@ public final class NLKPlugin extends JavaPlugin {
 
     public VirtualBlockRegistry getVirtualBlockRegistry() {
         return virtualBlockRegistry;
+    }
+
+    public PacketVirtualizationService getPacketVirtualizationService() {
+        return packetVirtualizationService;
     }
 }
