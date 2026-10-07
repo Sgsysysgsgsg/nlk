@@ -9,22 +9,8 @@ public final class FutureItemRegistry {
     private final List<FutureItem> items = new ArrayList<>();
 
     public FutureItemRegistry() {
-        // Prototype entries. The registry is intentionally client-gated.
-        // More items can be added without changing the translation service.
-        register(new FutureItem(
-                "sulfur",
-                776,
-                Material.SANDSTONE,
-                "sulfur",
-                "Sulfur"
-        ));
-        register(new FutureItem(
-                "potent_sulfur",
-                776,
-                Material.END_STONE,
-                "potent_sulfur",
-                "Potent Sulfur"
-        ));
+        register(new FutureItem("sulfur", 776, Material.SANDSTONE, "sulfur", 1, "Sulfur"));
+        register(new FutureItem("potent_sulfur", 776, Material.END_STONE, "potent_sulfur", 2, "Potent Sulfur"));
     }
 
     public void register(FutureItem item) {
