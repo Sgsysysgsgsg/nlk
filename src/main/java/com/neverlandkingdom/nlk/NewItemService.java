@@ -86,7 +86,7 @@ public final class NewItemService {
                     ),
                     url,
                     null,
-                    Component.text("NLK: Future Minecraft item visuals"),
+                    "NLK: Future Minecraft item visuals",
                     false
             );
         } catch (IllegalArgumentException ex) {
