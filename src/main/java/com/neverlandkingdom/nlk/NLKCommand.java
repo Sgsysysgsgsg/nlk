@@ -25,15 +25,17 @@ public final class NLKCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.GRAY + "Client protocol: " + ChatColor.WHITE + profile.protocol());
                 sender.sendMessage(ChatColor.GRAY + "Newer than server: " +
                         (profile.newerThanServer() ? ChatColor.GREEN + "yes" : ChatColor.GRAY + "no"));
+                sender.sendMessage(ChatColor.GRAY + "Feature definitions available: " +
+                        ChatColor.WHITE + plugin.getFeatureRegistry().forClientProtocol(profile.protocol()).size());
             } else {
                 sender.sendMessage(ChatColor.GRAY + "Client protocol: " + ChatColor.WHITE + "console");
             }
 
-            sender.sendMessage(ChatColor.GRAY + "Preview modules: " + ChatColor.YELLOW + "in development");
             return true;
         }
 
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            plugin.reloadConfig();
             sender.sendMessage(ChatColor.GREEN + "NLK configuration reload completed.");
             return true;
         }
