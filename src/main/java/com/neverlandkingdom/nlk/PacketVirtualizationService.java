@@ -6,6 +6,8 @@ import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerBlockChange;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChunkData;
+import com.github.retrooper.packetevents.protocol.world.chunk.BaseChunk;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerMultiBlockChange;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -64,6 +66,11 @@ public final class PacketVirtualizationService extends PacketListenerAbstract {
 
         if (!profile.newerThanServer()) return;
 
+        if (event.getPacketType() == com.github.retrooper.packetevents.protocol.packettype.PacketType.Play.Server.CHUNK_DATA) {
+            rewriteChunk(event, player);
+            return;
+        }
+
         if (event.getPacketType() == com.github.retrooper.packetevents.protocol.packettype.PacketType.Play.Server.BLOCK_CHANGE) {
             WrapperPlayServerBlockChange packet = new WrapperPlayServerBlockChange(event);
             Location location = new Location(
@@ -90,6 +97,36 @@ public final class PacketVirtualizationService extends PacketListenerAbstract {
                 }
             }
         }
+    }
+
+
+    private void rewriteChunk(PacketSendEvent event, Player player) {
+        WrapperPlayServerChunkData packet = new WrapperPlayServerChunkData(event);
+        var column = packet.getColumn();
+        if (column == null) return;
+
+        int chunkX = column.getX();
+        int chunkZ = column.getZ();
+        int minY = event.getUser().getMinWorldHeight();
+
+        for (Map.Entry<BlockKey, String> entry : virtualBlocks.entrySet()) {
+            BlockKey key = entry.getKey();
+            if (!key.world().equals(player.getWorld().getName())) continue;
+            if ((key.x() >> 4) != chunkX || (key.z() >> 4) != chunkZ) continue;
+
+            int sectionIndex = Math.floorDiv(key.y() - minY, 16);
+            if (sectionIndex < 0 || sectionIndex >= column.getChunks().length) continue;
+
+            BaseChunk section = column.getChunks()[sectionIndex];
+            if (section == null) continue;
+
+            int localX = key.x() & 15;
+            int localY = Math.floorMod(key.y() - minY, 16);
+            int localZ = key.z() & 15;
+            section.set(localX, localY, localZ, carrierState(entry.getValue()));
+        }
+
+        packet.setColumn(column);
     }
 
     private WrappedBlockState carrierState(String id) {
