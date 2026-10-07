@@ -6,3 +6,5 @@ assets/minecraft/models/item/sandstone_sulfur.json
 assets/minecraft/models/item/end_stone_potent_sulfur.json
 
 The pack is intentionally bundled as source assets; NLK can be extended to publish/package it.
+
+# Pack build is validated automatically by GitHub Actions.
