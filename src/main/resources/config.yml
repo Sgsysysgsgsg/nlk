@@ -6,7 +6,7 @@ automatic-features: true
 
 resource-pack:
   enabled: true
-  url: ""
+  url: "https://github.com/Sgsysysgsgsg/nlk/releases/download/nlk-latest/NLK-Future-Items.zip"
 
 preview:
   # Keep false by default: NLK should not put items into player inventories.
