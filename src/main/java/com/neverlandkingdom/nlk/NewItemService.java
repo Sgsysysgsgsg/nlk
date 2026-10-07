@@ -14,11 +14,11 @@ import java.util.UUID;
 
 public final class NewItemService {
     private final NLKPlugin plugin;
-    private final NamespacedKey seededKey;
+    private final NamespacedKey futureItemKey;
 
     public NewItemService(NLKPlugin plugin) {
         this.plugin = plugin;
-        this.seededKey = new NamespacedKey(plugin, "future_items_seeded");
+        this.futureItemKey = new NamespacedKey(plugin, "future_item");
     }
 
     public void applyTo(Player player) {
@@ -30,14 +30,17 @@ public final class NewItemService {
 
         sendResourcePack(player);
 
-        if (player.getPersistentDataContainer().has(seededKey, PersistentDataType.BYTE)) {
-            return;
+        // The carrier item is a real 1.21.11 item. The resource pack uses
+        // its component data to render the newer item's model/icon.
+        // Nothing is injected into the old server's vanilla registry.
+        if (plugin.getConfig().getBoolean("preview.give-on-join", false)) {
+            givePreviewItems(player);
         }
+    }
 
-        addIfPossible(player, futureItem(Material.SANDSTONE, "sulfur", "Sulfur"));
-        addIfPossible(player, futureItem(Material.END_STONE, "potent_sulfur", "Potent Sulfur"));
-
-        player.getPersistentDataContainer().set(seededKey, PersistentDataType.BYTE, (byte) 1);
+    private void givePreviewItems(Player player) {
+        give(player, futureItem(Material.SANDSTONE, "sulfur", "Sulfur"));
+        give(player, futureItem(Material.END_STONE, "potent_sulfur", "Potent Sulfur"));
     }
 
     private ItemStack futureItem(Material carrier, String modelKey, String displayName) {
@@ -50,11 +53,17 @@ public final class NewItemService {
         customModelData.setStrings(List.of(modelKey));
         meta.setCustomModelDataComponent(customModelData);
 
+        meta.getPersistentDataContainer().set(
+                futureItemKey,
+                PersistentDataType.STRING,
+                modelKey
+        );
+
         item.setItemMeta(meta);
         return item;
     }
 
-    private void addIfPossible(Player player, ItemStack item) {
+    private void give(Player player, ItemStack item) {
         var leftovers = player.getInventory().addItem(item);
         leftovers.values().forEach(leftover ->
                 player.getWorld().dropItemNaturally(player.getLocation(), leftover));
@@ -65,12 +74,8 @@ public final class NewItemService {
             return;
         }
 
-        String url = plugin.getConfig().getString(
-                "resource-pack.url",
-                "https://www.curseforge.com/minecraft/texture-packs/vbp/download/8954075"
-        );
-
-        if (url == null || url.isBlank()) {
+        String url = plugin.getConfig().getString("resource-pack.url", "");
+        if (url.isBlank()) {
             return;
         }
 
@@ -81,7 +86,7 @@ public final class NewItemService {
                     ),
                     url,
                     null,
-                    "NLK: Future Minecraft item visuals",
+                    Component.text("NLK: Future Minecraft item visuals"),
                     false
             );
         } catch (IllegalArgumentException ex) {
