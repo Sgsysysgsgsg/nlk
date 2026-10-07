@@ -1,3 +1,6 @@
 {
-  "parent": "minecraft:item/gold_ingot"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/nlk_sulfur"
+  }
 }
