@@ -24,15 +24,10 @@ public final class NewItemService {
 
     public void applyTo(Player player) {
         ClientProfile profile = plugin.getClientVersionService().profile(player);
-
-        if (!profile.newerThanServer()) {
-            return;
-        }
+        if (!profile.newerThanServer()) return;
 
         sendResourcePack(player);
 
-        // The preview is opt-in and only uses real 1.21.11 carrier items.
-        // It never injects new vanilla registry entries into the backend.
         if (plugin.getConfig().getBoolean("preview.give-on-join", false)) {
             for (FutureItem definition : registry.forClientProtocol(profile.protocol())) {
                 give(player, createItem(definition));
@@ -47,6 +42,7 @@ public final class NewItemService {
         meta.displayName(Component.text(definition.displayName()));
 
         var customModelData = meta.getCustomModelDataComponent();
+        customModelData.setFloats(List.of((float) definition.customModelData()));
         customModelData.setStrings(List.of(definition.modelKey()));
         meta.setCustomModelDataComponent(customModelData);
 
@@ -67,20 +63,14 @@ public final class NewItemService {
     }
 
     private void sendResourcePack(Player player) {
-        if (!plugin.getConfig().getBoolean("resource-pack.enabled", true)) {
-            return;
-        }
+        if (!plugin.getConfig().getBoolean("resource-pack.enabled", true)) return;
 
         String url = plugin.getConfig().getString("resource-pack.url", "");
-        if (url.isBlank()) {
-            return;
-        }
+        if (url.isBlank()) return;
 
         try {
             player.addResourcePack(
-                    UUID.nameUUIDFromBytes(
-                            "NLK-Future-Items".getBytes(StandardCharsets.UTF_8)
-                    ),
+                    UUID.nameUUIDFromBytes("NLK-Future-Items".getBytes(StandardCharsets.UTF_8)),
                     url,
                     null,
                     "NLK: Future Minecraft item visuals",
