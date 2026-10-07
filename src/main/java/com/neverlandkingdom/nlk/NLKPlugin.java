@@ -8,6 +8,7 @@ public final class NLKPlugin extends JavaPlugin {
     private FeatureRegistry featureRegistry;
     private FutureItemRegistry futureItemRegistry;
     private NewItemService newItemService;
+    private BedrockIntegration bedrockIntegration;
 
     @Override
     public void onEnable() {
@@ -20,6 +21,8 @@ public final class NLKPlugin extends JavaPlugin {
         featureRegistry = new FeatureRegistry();
         futureItemRegistry = new FutureItemRegistry();
         newItemService = new NewItemService(this, futureItemRegistry);
+        bedrockIntegration = new BedrockIntegration(this);
+        bedrockIntegration.installMapping();
 
         if (getServer().getPluginManager().getPlugin("ViaVersion") == null) {
             getLogger().warning("ViaVersion is not installed. NLK client-version detection will be unavailable.");
