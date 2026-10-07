@@ -29,6 +29,14 @@ jobs:
       - name: Build
         run: gradle build --no-daemon
 
+      - name: Validate resource pack
+        run: |
+          test -f src/main/resources/resourcepack/pack.mcmeta
+          test -f src/main/resources/resourcepack/assets/minecraft/models/item/sandstone.json
+          test -f src/main/resources/resourcepack/assets/minecraft/models/item/end_stone.json
+          test -f src/main/resources/resourcepack/assets/minecraft/textures/item/nlk_sulfur.png
+          test -f src/main/resources/resourcepack/assets/minecraft/textures/item/nlk_potent_sulfur.png
+
       - name: Build Java resource pack
         run: |
           mkdir -p build/resourcepack
