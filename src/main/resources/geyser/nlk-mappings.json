@@ -4,7 +4,7 @@
     "minecraft:sandstone": [
       {
         "type": "legacy",
-        "custom_model_data": 0,
+        "custom_model_data": 1,
         "bedrock_identifier": "nlk:sulfur",
         "display_name": "Sulfur",
         "bedrock_options": {
@@ -16,7 +16,7 @@
     "minecraft:end_stone": [
       {
         "type": "legacy",
-        "custom_model_data": 1,
+        "custom_model_data": 2,
         "bedrock_identifier": "nlk:potent_sulfur",
         "display_name": "Potent Sulfur",
         "bedrock_options": {
