@@ -12,6 +12,12 @@ preview:
   # Keep false by default: NLK should not put items into player inventories.
   give-on-join: false
 
+virtual-items:
+  # Protect translated future items from being consumed/placed by the old
+  # 1.21.11 carrier behavior. Dedicated NLK behavior handlers can replace
+  # this protection for individual items later.
+  prevent-vanilla-use: true
+
 virtualization:
   # Experimental packet-only block virtualization. World data is never modified.
   enabled: false
