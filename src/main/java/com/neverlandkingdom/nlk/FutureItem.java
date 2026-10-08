@@ -8,6 +8,7 @@ public record FutureItem(
         Material carrier,
         String modelKey,
         int customModelData,
-        String displayName
+        String displayName,
+        boolean placeable
 ) {
 }
