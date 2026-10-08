@@ -26,6 +26,11 @@ public final class NewItemService {
         ClientProfile profile = plugin.getClientVersionService().profile(player);
         sendResourcePack(player);
 
+        // ViaVersion/ViaBackwards can expose newer client items as an older carrier
+        // item with custom model data. Normalize the inventory after the protocol
+        // negotiation is ready so NLK can identify those items reliably.
+        normalizeInventory(player);
+
         if (!profile.newerThanServer()) return;
 
         if (plugin.getConfig().getBoolean("preview.give-on-join", false)) {
@@ -33,6 +38,83 @@ public final class NewItemService {
                 give(player, createItem(definition));
             }
         }
+    }
+
+    /**
+     * Returns the NLK definition represented by this ItemStack.
+     *
+     * Items created by NLK carry a PDC marker. Items translated by
+     * ViaBackwards/Geyser may not, so we also recognize the carrier +
+     * custom-model-data representation used on the wire.
+     */
+    public FutureItem identify(ItemStack item) {
+        if (item == null || item.getType().isAir()) return null;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return null;
+
+        String storedId = meta.getPersistentDataContainer().get(
+                futureItemKey,
+                PersistentDataType.STRING
+        );
+
+        if (storedId != null) {
+            FutureItem stored = registry.find(storedId);
+            if (stored != null) return stored;
+        }
+
+        var customModelData = meta.getCustomModelDataComponent();
+        List<Float> floats = customModelData.getFloats();
+        List<String> strings = customModelData.getStrings();
+
+        for (FutureItem definition : registry.all()) {
+            if (item.getType() != definition.carrier()) continue;
+
+            boolean numberMatch = floats.stream()
+                    .anyMatch(value -> Float.compare(value, definition.customModelData()) == 0);
+            boolean modelMatch = strings.stream()
+                    .anyMatch(value -> value.equalsIgnoreCase(definition.modelKey()));
+
+            if (numberMatch || modelMatch) {
+                mark(item, definition);
+                return definition;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Adds the stable NLK identity to an item translated by ViaBackwards/Geyser.
+     * This is deliberately server-side metadata; it does not change the visible
+     * carrier or the resource-pack model.
+     */
+    public boolean normalize(ItemStack item) {
+        return identify(item) != null;
+    }
+
+    public void normalizeInventory(Player player) {
+        for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
+            ItemStack item = player.getInventory().getItem(slot);
+            if (item == null || item.getType().isAir()) continue;
+
+            FutureItem definition = identify(item);
+            if (definition != null) {
+                player.getInventory().setItem(slot, item);
+            }
+        }
+    }
+
+    private void mark(ItemStack item, FutureItem definition) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+
+        meta.getPersistentDataContainer().set(
+                futureItemKey,
+                PersistentDataType.STRING,
+                definition.id()
+        );
+        item.setItemMeta(meta);
     }
 
     private ItemStack createItem(FutureItem definition) {
